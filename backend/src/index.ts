@@ -24,7 +24,7 @@ app.post("/template", async (req, res) => {
         messages: [{
             role: 'user', content: prompt
         }],
-        model: 'claude-3-5-sonnet-20241022',
+        model: process.env.ANTHROPIC_MODEL as string,
         max_tokens: 200,
         system: "Return either node or react based on what do you think this project should be. Only return a single word either 'node' or 'react'. Do not return anything extra"
     })
@@ -55,7 +55,7 @@ app.post("/chat", async (req, res) => {
     const messages = req.body.messages;
     const response = await anthropic.messages.create({
         messages: messages,
-        model: 'claude-3-5-sonnet-20241022',
+        model: process.env.ANTHROPIC_MODEL as string,
         max_tokens: 8000,
         system: getSystemPrompt()
     })
