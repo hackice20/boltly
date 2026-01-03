@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, ArrowRight, Lightbulb } from 'lucide-react';
+import { Plus, ArrowRight, Lightbulb, Sun, Moon } from 'lucide-react';
 
 // Minimal geometric lightning bolt logo
-function BoltLogo() {
+function BoltLogo({ fill = 'black' }: { fill?: string }) {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-      <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" fill="black" />
+      <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" fill={fill} />
     </svg>
   );
 }
@@ -14,6 +14,7 @@ function BoltLogo() {
 export function Home() {
   const [prompt, setPrompt] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -31,14 +32,22 @@ export function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden text-antialiased">
+    <div
+      style={{
+        minHeight: '100vh',
+        backgroundColor: isDarkMode ? '#000000' : '#fafafa',
+        position: 'relative',
+        overflow: 'hidden',
+        transition: 'background-color 0.3s ease',
+      }}
+    >
       {/* Grid Background */}
       <div
-        className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+        className="absolute inset-0 transition-opacity duration-500 ease-in-out"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px)
+            linear-gradient(${isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)'} 1px, transparent 1px),
+            linear-gradient(90deg, ${isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)'} 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px',
           maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%)',
@@ -57,24 +66,52 @@ export function Home() {
             right: 0,
             zIndex: 50,
             padding: '24px 32px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
           }}
         >
+          {/* Logo - Left */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
             <div
               style={{
                 width: '32px',
                 height: '32px',
-                backgroundColor: 'white',
+                backgroundColor: isDarkMode ? 'white' : '#18181b',
                 borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <BoltLogo />
+              <BoltLogo fill={isDarkMode ? 'black' : 'white'} />
             </div>
-            <span style={{ fontSize: '16px', fontWeight: 600, color: 'white' }}>Boltly</span>
+            <span style={{ fontSize: '16px', fontWeight: 600, color: isDarkMode ? 'white' : '#18181b' }}>Boltly</span>
           </div>
+
+          {/* Theme Toggle - Right */}
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              backgroundColor: isDarkMode ? '#27272a' : '#e4e4e7',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+            aria-label="Toggle theme"
+          >
+            {isDarkMode ? (
+              <Sun style={{ width: '20px', height: '20px', color: '#fbbf24' }} />
+            ) : (
+              <Moon style={{ width: '20px', height: '20px', color: '#3b82f6' }} />
+            )}
+          </button>
         </header>
 
         {/* ========== MAIN CONTENT ========== */}
@@ -82,11 +119,19 @@ export function Home() {
           <div className="w-full max-w-2xl">
 
             {/* ===== HERO TEXT ===== */}
-            <div className="text-center mb-10">
-              <h1 className="text-4xl md:text-5xl font-medium tracking-tight text-white mb-3">
+            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+              <h1
+                style={{
+                  fontSize: '3rem',
+                  fontWeight: 500,
+                  letterSpacing: '-0.02em',
+                  color: isDarkMode ? 'white' : '#18181b',
+                  marginBottom: '12px',
+                }}
+              >
                 What will you build today?
               </h1>
-              <p className="text-zinc-400 text-base md:text-lg">
+              <p style={{ color: isDarkMode ? '#a1a1aa' : '#71717a', fontSize: '1.125rem' }}>
                 Describe your idea and watch it come to life.
               </p>
             </div>
@@ -96,10 +141,14 @@ export function Home() {
               <div
                 style={{
                   borderRadius: '24px',
-                  backgroundColor: '#18181b',
-                  border: isFocused ? '1px solid #52525b' : '1px solid #27272a',
+                  backgroundColor: isDarkMode ? '#18181b' : '#ffffff',
+                  border: isFocused
+                    ? `1px solid ${isDarkMode ? '#52525b' : '#a1a1aa'}`
+                    : `1px solid ${isDarkMode ? '#27272a' : '#e4e4e7'}`,
                   overflow: 'hidden',
-                  boxShadow: isFocused ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
+                  boxShadow: isFocused
+                    ? `0 25px 50px -12px ${isDarkMode ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.15)'}`
+                    : `0 10px 15px -3px ${isDarkMode ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.08)'}`,
                   transition: 'all 0.2s ease',
                 }}
               >
@@ -116,7 +165,7 @@ export function Home() {
                       width: '100%',
                       minHeight: '80px',
                       backgroundColor: 'transparent',
-                      color: 'white',
+                      color: isDarkMode ? 'white' : '#18181b',
                       fontSize: '16px',
                       lineHeight: '1.6',
                       border: 'none',
@@ -144,7 +193,7 @@ export function Home() {
                       width: '40px',
                       height: '40px',
                       borderRadius: '50%',
-                      backgroundColor: '#3f3f46',
+                      backgroundColor: isDarkMode ? '#3f3f46' : '#e4e4e7',
                       border: 'none',
                       display: 'flex',
                       alignItems: 'center',
@@ -152,7 +201,7 @@ export function Home() {
                       cursor: 'pointer',
                     }}
                   >
-                    <Plus style={{ width: '20px', height: '20px', color: '#a1a1aa' }} />
+                    <Plus style={{ width: '20px', height: '20px', color: isDarkMode ? '#a1a1aa' : '#52525b' }} />
                   </button>
 
                   {/* RIGHT BUTTONS */}
@@ -167,7 +216,7 @@ export function Home() {
                         padding: '8px 16px',
                         backgroundColor: 'transparent',
                         border: 'none',
-                        color: '#a1a1aa',
+                        color: isDarkMode ? '#a1a1aa' : '#52525b',
                         fontSize: '14px',
                         cursor: 'pointer',
                       }}
@@ -204,23 +253,23 @@ export function Home() {
             </form>
 
             {/* ===== SUGGESTION CHIPS ===== */}
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <span className="text-xs text-zinc-500 mr-1">Try:</span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '12px', color: isDarkMode ? '#71717a' : '#a1a1aa', marginRight: '4px' }}>Try:</span>
               {suggestions.map((suggestion, i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => setPrompt(suggestion)}
-                  className="
-                    px-3 py-1
-                    rounded-lg
-                    text-xs text-zinc-400
-                    bg-zinc-900
-                    border border-zinc-800
-                    hover:text-white
-                    hover:border-zinc-700
-                    transition-colors
-                  "
+                  style={{
+                    padding: '4px 12px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    color: isDarkMode ? '#a1a1aa' : '#52525b',
+                    backgroundColor: isDarkMode ? '#18181b' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#27272a' : '#e4e4e7'}`,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
                 >
                   {suggestion}
                 </button>
