@@ -1,3 +1,250 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* CSS Custom Properties for Glassmorphic Design */
+:root {
+    /* Glass effect values */
+    --glass-bg: rgba(24, 24, 27, 0.7);
+    --glass-bg-light: rgba(39, 39, 42, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-border-strong: rgba(255, 255, 255, 0.15);
+
+    /* Shadows */
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --shadow-glass-lg: 0 12px 48px 0 rgba(0, 0, 0, 0.5);
+    --shadow-glass-sm: 0 4px 16px 0 rgba(0, 0, 0, 0.25);
+
+    /* Primary accent */
+    --primary: #f17013;
+    --primary-light: #f48d32;
+    --primary-dark: #e25809;
+}
+
+/* Base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #18181b;
+    color: #fafafa;
+    overflow-x: hidden;
+}
+
+/* Custom Scrollbar Styles - Slim and Blended */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(39, 39, 42, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(115, 115, 115, 0.5);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(163, 163, 163, 0.7);
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(115, 115, 115, 0.5) rgba(39, 39, 42, 0.3);
+}
+
+/* Glass Container Utility Classes */
+.glass-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-glass);
+    border-radius: 1rem;
+}
+
+.glass-container-light {
+    background: var(--glass-bg-light);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-glass-sm);
+    border-radius: 0.75rem;
+}
+
+/* Glass Button Base */
+.glass-button {
+    background: var(--glass-bg-light);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border-strong);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-button:hover {
+    background: rgba(39, 39, 42, 0.8);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 20px rgba(241, 112, 19, 0.2);
+}
+
+/* Glass Input */
+.glass-input {
+    background: rgba(24, 24, 27, 0.5);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid var(--glass-border);
+    border-bottom: 2px solid var(--glass-border-strong);
+    transition: all 0.2s ease;
+}
+
+.glass-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 15px rgba(241, 112, 19, 0.15);
+    background: rgba(24, 24, 27, 0.7);
+}
+
+/* Textarea placeholder - ensure visibility */
+textarea::placeholder {
+    color: rgb(113, 113, 122);
+    opacity: 1;
+}
+
+/* Text Selection */
+::selection {
+    background: rgba(241, 112, 19, 0.3);
+    color: #fafafa;
+}
+
+/* Smooth Transitions */
+.transition-glass {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Subtle background texture/noise */
+.bg-noise {
+    background-image:
+        radial-gradient(at 40% 20%, rgba(241, 112, 19, 0.05) 0px, transparent 50%),
+        radial-gradient(at 80% 0%, rgba(39, 39, 42, 0.8) 0px, transparent 50%);
+}
+
+/* Italic Gradient Text - Boltly Orange Brand */
+.text-gradient-italic {
+    font-style: italic;
+    background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Clean Input Container - Bolt.new style */
+.input-container-clean {
+    background: rgba(39, 39, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    transition: all 0.2s ease;
+}
+
+.input-container-clean:hover,
+.input-container-clean:focus-within {
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Ghost Button - Like Bolt.new "Plan" */
+.btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #a1a1aa;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #e4e4e7;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Primary Action Button - Bolt.new style */
+.btn-primary-action {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary-action:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+.btn-primary-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Import link style */
+.import-link {
+    color: #71717a;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    transition: color 0.2s ease;
+}
+
+.import-link:hover {
+    color: #a1a1aa;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-up-fade {
+    opacity: 0;
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-100 {
+    animation-delay: 100ms;
+}
+
+.delay-200 {
+    animation-delay: 200ms;
+}

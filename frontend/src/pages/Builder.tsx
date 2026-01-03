@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { StepsList } from '../components/StepsList';
 import { FileExplorer } from '../components/FileExplorer';
@@ -10,18 +10,9 @@ import axios from 'axios';
 import { BACKEND_URL } from '../config';
 import { parseXml } from '../steps';
 import { useWebContainer } from '../hooks/useWebContainer';
-import { FileNode } from '@webcontainer/api';
 import { Loader } from '../components/Loader';
 import DownloadButton from '../components/DownloadButton';
-
-const MOCK_FILE_CONTENT = `// This is a sample file content
-import React from 'react';
-
-function Component() {
-  return <div>Hello World</div>;
-}
-
-export default Component;`;
+import { GlassContainer, GlassButton, GlassTextarea } from '../components/ui';
 
 export function Builder() {
   const location = useLocation();
@@ -176,35 +167,49 @@ export function Builder() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col">
-      <header className="bg-gray-800 border-b border-gray-700 px-6 py-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-gray-100">Website Builder</h1>
-          <DownloadButton files={files} />
+    <div className="min-h-screen bg-charcoal-900 bg-noise flex flex-col">
+      {/* Floating Glass Header */}
+      <header className="mx-6 mt-4 mb-6">
+        <div className="glass-container-light">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-xl font-serif font-bold text-gray-100">Bolty Builder</h1>
+              <p className="text-xs text-gray-400 mt-1">{prompt}</p>
+            </div>
+            <DownloadButton files={files} />
+          </div>
         </div>
-        <p className="text-sm text-gray-400 mt-1">Prompt: {prompt}</p>
       </header>
 
-      <div className="flex-1 overflow-hidden">
-        <div className="h-full grid grid-cols-4 gap-6 p-6">
-          <div className="col-span-1 space-y-6 overflow-auto">
-            <div>
-              <div className="max-h-[75vh] overflow-scroll">
-                <StepsList
-                  steps={steps}
-                  currentStep={currentStep}
-                  onStepClick={setCurrentStep}
-                />
-              </div>
-              <div>
-                <div className="flex">
-                  <br />
-                  {(loading || !templateSet) && <Loader />}
-                  {!(loading || !templateSet) && <div className="flex">
-                    <textarea value={userPrompt} onChange={(e) => {
-                      setPrompt(e.target.value);
-                    }} className="p-2 w-full"></textarea>
-                    <button onClick={async () => {
+      <div className="flex-1 overflow-hidden px-6 pb-6">
+        <div className="h-full grid grid-cols-4 gap-4">
+          {/* Steps Panel - Left */}
+          <div className="col-span-1 space-y-4 overflow-auto">
+            <div className="max-h-[calc(100vh-20rem)] overflow-auto">
+              <StepsList
+                steps={steps}
+                currentStep={currentStep}
+                onStepClick={setCurrentStep}
+              />
+            </div>
+
+            {/* Prompt Input Section */}
+            <GlassContainer variant="light" className="space-y-3">
+              {(loading || !templateSet) ? (
+                <div className="py-4">
+                  <Loader />
+                  <p className="text-center text-gray-400 text-sm mt-3">Processing...</p>
+                </div>
+              ) : (
+                <>
+                  <GlassTextarea
+                    value={userPrompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="Ask for modifications..."
+                    className="h-24"
+                  />
+                  <GlassButton
+                    onClick={async () => {
                       const newMessage = {
                         role: "user" as "user",
                         content: userPrompt
@@ -227,27 +232,41 @@ export function Builder() {
                         status: "pending" as "pending"
                       }))]);
 
-                    }} className="bg-purple-400 px-4">Send</button>
-                  </div>}
-                </div>
-              </div>
-            </div>
+                      setPrompt("");
+                    }}
+                    disabled={!userPrompt.trim()}
+                    variant="primary"
+                    fullWidth
+                  >
+                    Send Request
+                  </GlassButton>
+                </>
+              )}
+            </GlassContainer>
           </div>
-          <div className="col-span-1">
+
+          {/* File Explorer - Middle Left */}
+          <div className="col-span-1 h-[calc(100vh-12rem)] overflow-auto">
             <FileExplorer
               files={files}
               onFileSelect={setSelectedFile}
             />
           </div>
-          <div className="col-span-2 bg-gray-900 rounded-lg shadow-lg p-4 h-[calc(100vh-8rem)]">
-            <TabView activeTab={activeTab} onTabChange={setActiveTab} />
-            <div className="h-[calc(100%-4rem)]">
-              {activeTab === 'code' ? (
-                <CodeEditor file={selectedFile} />
-              ) : (
-                <PreviewFrame webContainer={webcontainer} files={files} />
-              )}
-            </div>
+
+          {/* Code/Preview Panel - Right */}
+          <div className="col-span-2">
+            <GlassContainer variant="light" noPadding className="h-[calc(100vh-12rem)] flex flex-col">
+              <div className="p-4 pb-0">
+                <TabView activeTab={activeTab} onTabChange={setActiveTab} />
+              </div>
+              <div className="flex-1 p-4 pt-0">
+                {activeTab === 'code' ? (
+                  <CodeEditor file={selectedFile} />
+                ) : (
+                  <PreviewFrame webContainer={webcontainer} />
+                )}
+              </div>
+            </GlassContainer>
           </div>
         </div>
       </div>

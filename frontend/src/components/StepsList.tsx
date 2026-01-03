@@ -1,4 +1,3 @@
-import React from 'react';
 import { CheckCircle, Circle, Clock } from 'lucide-react';
 import { Step } from '../types';
 
@@ -10,30 +9,31 @@ interface StepsListProps {
 
 export function StepsList({ steps, currentStep, onStepClick }: StepsListProps) {
   return (
-    <div className="bg-gray-900 rounded-lg shadow-lg p-4 h-full overflow-auto">
-      <h2 className="text-lg font-semibold mb-4 text-gray-100">Build Steps</h2>
-      <div className="space-y-4">
+    <div className="glass-container-light h-full overflow-auto">
+      <h2 className="text-lg font-serif font-semibold mb-4 text-gray-100">Build Steps</h2>
+      <div className="space-y-3">
         {steps.map((step) => (
           <div
             key={step.id}
-            className={`p-1 rounded-lg cursor-pointer transition-colors ${
-              currentStep === step.id
-                ? 'bg-gray-800 border border-gray-700'
-                : 'hover:bg-gray-800'
-            }`}
+            className={`p-3 rounded-lg cursor-pointer transition-glass ${currentStep === step.id
+                ? 'bg-primary-500/10 border border-primary-500/30'
+                : 'hover:bg-white/5 border border-transparent'
+              }`}
             onClick={() => onStepClick(step.id)}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               {step.status === 'completed' ? (
-                <CheckCircle className="w-5 h-5 text-green-500" />
+                <CheckCircle className="w-5 h-5 text-primary-500" />
               ) : step.status === 'in-progress' ? (
-                <Clock className="w-5 h-5 text-blue-400" />
+                <Clock className="w-5 h-5 text-primary-400 animate-pulse" />
               ) : (
                 <Circle className="w-5 h-5 text-gray-600" />
               )}
-              <h3 className="font-medium text-gray-100">{step.title}</h3>
+              <h3 className="font-medium text-gray-100 text-sm">{step.title}</h3>
             </div>
-            <p className="text-sm text-gray-400 mt-2">{step.description}</p>
+            {step.description && (
+              <p className="text-xs text-gray-400 mt-2 ml-8">{step.description}</p>
+            )}
           </div>
         ))}
       </div>

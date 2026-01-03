@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FolderTree, File, ChevronRight, ChevronDown } from 'lucide-react';
 import { FileItem } from '../types';
 
@@ -27,7 +27,7 @@ function FileNode({ item, depth, onFileClick }: FileNodeProps) {
   return (
     <div className="select-none">
       <div
-        className="flex items-center gap-2 p-2 hover:bg-gray-800 rounded-md cursor-pointer"
+        className="flex items-center gap-2 p-2 hover:bg-white/5 rounded-md cursor-pointer transition-glass"
         style={{ paddingLeft: `${depth * 1.5}rem` }}
         onClick={handleClick}
       >
@@ -41,11 +41,11 @@ function FileNode({ item, depth, onFileClick }: FileNodeProps) {
           </span>
         )}
         {item.type === 'folder' ? (
-          <FolderTree className="w-4 h-4 text-blue-400" />
+          <FolderTree className="w-4 h-4 text-primary-400" />
         ) : (
-          <File className="w-4 h-4 text-gray-400" />
+          <File className="w-4 h-4 text-zinc-400" />
         )}
-        <span className="text-gray-200">{item.name}</span>
+        <span className="text-gray-200 text-sm">{item.name}</span>
       </div>
       {item.type === 'folder' && isExpanded && item.children && (
         <div>
@@ -65,10 +65,10 @@ function FileNode({ item, depth, onFileClick }: FileNodeProps) {
 
 export function FileExplorer({ files, onFileSelect }: FileExplorerProps) {
   return (
-    <div className="bg-gray-900 rounded-lg shadow-lg p-4 h-full overflow-auto">
-      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-100">
-        <FolderTree className="w-5 h-5" />
-        File Explorer
+    <div className="glass-container-light h-full overflow-auto">
+      <h2 className="text-lg font-serif font-semibold mb-4 flex items-center gap-2 text-gray-100">
+        <FolderTree className="w-5 h-5 text-primary-500" />
+        Files
       </h2>
       <div className="space-y-1">
         {files.map((file, index) => (
