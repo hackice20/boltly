@@ -1,20 +1,31 @@
 import { useState } from 'react';
-import { FolderTree, File, ChevronRight, ChevronDown } from 'lucide-react';
+import { Folder, FileText, ChevronRight, ChevronDown } from 'lucide-react';
 import { FileItem } from '../types';
 
 interface FileExplorerProps {
   files: FileItem[];
   onFileSelect: (file: FileItem) => void;
+  isDarkMode: boolean;
 }
 
 interface FileNodeProps {
   item: FileItem;
   depth: number;
   onFileClick: (file: FileItem) => void;
+  isDarkMode: boolean;
 }
 
-function FileNode({ item, depth, onFileClick }: FileNodeProps) {
+function FileNode({ item, depth, onFileClick, isDarkMode }: FileNodeProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const colors = {
+    text: isDarkMode ? '#fafafa' : '#18181b',
+    textMuted: isDarkMode ? '#a1a1aa' : '#71717a',
+    textDim: isDarkMode ? '#52525b' : '#a1a1aa',
+    hoverBg: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+    folderColor: isDarkMode ? '#a1a1aa' : '#71717a',
+  };
 
   const handleClick = () => {
     if (item.type === 'folder') {
@@ -24,28 +35,87 @@ function FileNode({ item, depth, onFileClick }: FileNodeProps) {
     }
   };
 
+  // Get file extension for icon color
+  const getFileColor = (name: string) => {
+    const ext = name.split('.').pop()?.toLowerCase();
+    const darkColors: Record<string, string> = {
+      ts: '#3b82f6', tsx: '#3b82f6',
+      js: '#eab308', jsx: '#eab308',
+      css: '#a855f7', scss: '#a855f7',
+      html: '#f97316',
+      json: '#22c55e',
+      md: '#a1a1aa',
+    };
+    const lightColors: Record<string, string> = {
+      ts: '#2563eb', tsx: '#2563eb',
+      js: '#ca8a04', jsx: '#ca8a04',
+      css: '#9333ea', scss: '#9333ea',
+      html: '#ea580c',
+      json: '#16a34a',
+      md: '#71717a',
+    };
+    const colors = isDarkMode ? darkColors : lightColors;
+    return colors[ext || ''] || (isDarkMode ? '#71717a' : '#a1a1aa');
+  };
+
   return (
-    <div className="select-none">
+    <div style={{ userSelect: 'none' }}>
       <div
-        className="flex items-center gap-2 p-2 hover:bg-white/5 rounded-md cursor-pointer transition-glass"
-        style={{ paddingLeft: `${depth * 1.5}rem` }}
         onClick={handleClick}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          padding: '6px 8px',
+          paddingLeft: `${depth * 12 + 8}px`,
+          borderRadius: '6px',
+          cursor: 'pointer',
+          backgroundColor: isHovered ? colors.hoverBg : 'transparent',
+          transition: 'background-color 0.15s ease',
+        }}
       >
-        {item.type === 'folder' && (
-          <span className="text-gray-400">
-            {isExpanded ? (
-              <ChevronDown className="w-4 h-4" />
-            ) : (
-              <ChevronRight className="w-4 h-4" />
-            )}
-          </span>
-        )}
         {item.type === 'folder' ? (
-          <FolderTree className="w-4 h-4 text-primary-400" />
+          <>
+            <span style={{ color: colors.textDim, display: 'flex' }}>
+              {isExpanded ? (
+                <ChevronDown style={{ width: '12px', height: '12px' }} />
+              ) : (
+                <ChevronRight style={{ width: '12px', height: '12px' }} />
+              )}
+            </span>
+            <Folder
+              style={{
+                width: '14px',
+                height: '14px',
+                color: isExpanded ? colors.text : colors.folderColor,
+              }}
+            />
+          </>
         ) : (
-          <File className="w-4 h-4 text-zinc-400" />
+          <>
+            <span style={{ width: '12px' }} />
+            <FileText
+              style={{
+                width: '14px',
+                height: '14px',
+                color: getFileColor(item.name),
+              }}
+            />
+          </>
         )}
-        <span className="text-gray-200 text-sm">{item.name}</span>
+        <span
+          style={{
+            color: isHovered ? colors.text : colors.textMuted,
+            fontSize: '12px',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {item.name}
+        </span>
       </div>
       {item.type === 'folder' && isExpanded && item.children && (
         <div>
@@ -55,6 +125,7 @@ function FileNode({ item, depth, onFileClick }: FileNodeProps) {
               item={child}
               depth={depth + 1}
               onFileClick={onFileClick}
+              isDarkMode={isDarkMode}
             />
           ))}
         </div>
@@ -63,23 +134,28 @@ function FileNode({ item, depth, onFileClick }: FileNodeProps) {
   );
 }
 
-export function FileExplorer({ files, onFileSelect }: FileExplorerProps) {
+export function FileExplorer({ files, onFileSelect, isDarkMode }: FileExplorerProps) {
+  const colors = {
+    textDim: isDarkMode ? '#52525b' : '#a1a1aa',
+  };
+
   return (
-    <div className="glass-container-light h-full overflow-auto">
-      <h2 className="text-lg font-serif font-semibold mb-4 flex items-center gap-2 text-gray-100">
-        <FolderTree className="w-5 h-5 text-primary-500" />
-        Files
-      </h2>
-      <div className="space-y-1">
-        {files.map((file, index) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+      {files.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          <p style={{ color: colors.textDim, fontSize: '12px' }}>No files yet...</p>
+        </div>
+      ) : (
+        files.map((file, index) => (
           <FileNode
             key={`${file.path}-${index}`}
             item={file}
             depth={0}
             onFileClick={onFileSelect}
+            isDarkMode={isDarkMode}
           />
-        ))}
-      </div>
+        ))
+      )}
     </div>
   );
 }

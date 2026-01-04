@@ -1,10 +1,33 @@
-export function Loader() {
+interface LoaderProps {
+    isDarkMode: boolean;
+}
+
+export function Loader({ isDarkMode }: LoaderProps) {
+    const colors = {
+        track: isDarkMode ? '#27272a' : '#e4e4e7',
+        spinner: isDarkMode ? '#fafafa' : '#18181b',
+    };
+
     return (
-        <div className="flex justify-center items-center">
-            <div className="relative">
-                <div className="w-12 h-12 border-4 border-primary-500/20 border-t-primary-500 rounded-full animate-spin"></div>
-                <div className="absolute top-0 left-0 w-12 h-12 border-4 border-transparent border-t-primary-400/50 rounded-full animate-spin" style={{ animationDuration: '1.5s' }}></div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ position: 'relative' }}>
+                <div
+                    style={{
+                        width: '28px',
+                        height: '28px',
+                        border: `2px solid ${colors.track}`,
+                        borderTop: `2px solid ${colors.spinner}`,
+                        borderRadius: '50%',
+                        animation: 'spin 0.8s linear infinite',
+                    }}
+                />
             </div>
+            <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
         </div>
     );
 }

@@ -3,31 +3,55 @@ import { FileItem } from '../types';
 
 interface CodeEditorProps {
   file: FileItem | null;
+  isDarkMode: boolean;
 }
 
-export function CodeEditor({ file }: CodeEditorProps) {
+export function CodeEditor({ file, isDarkMode }: CodeEditorProps) {
+  const colors = {
+    text: isDarkMode ? '#fafafa' : '#18181b',
+    textMuted: isDarkMode ? '#a1a1aa' : '#71717a',
+    textDim: isDarkMode ? '#52525b' : '#a1a1aa',
+    border: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+  };
+
   if (!file) {
     return (
-      <div className="h-full flex items-center justify-center text-gray-400">
-        <div className="text-center space-y-2">
-          <p className="text-sm">Select a file to view its contents</p>
-          <p className="text-xs text-gray-500">Files will appear in the explorer on the left</p>
+      <div
+        style={{
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: '14px', color: colors.textMuted }}>Select a file to view its contents</p>
+          <p style={{ fontSize: '12px', color: colors.textDim, marginTop: '4px' }}>
+            Files will appear in the explorer on the left
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="h-full rounded-lg overflow-hidden border border-white/5">
+    <div
+      style={{
+        height: '100%',
+        borderRadius: '10px',
+        overflow: 'hidden',
+        border: `1px solid ${colors.border}`,
+      }}
+    >
       <Editor
         height="100%"
         defaultLanguage="typescript"
-        theme="vs-dark"
+        theme={isDarkMode ? 'vs-dark' : 'light'}
         value={file.content || ''}
         options={{
           readOnly: true,
           minimap: { enabled: false },
-          fontSize: 14,
+          fontSize: 13,
           wordWrap: 'on',
           scrollBeyondLastLine: false,
           padding: { top: 16, bottom: 16 },
