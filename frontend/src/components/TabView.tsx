@@ -15,7 +15,6 @@ export function TabView({ activeTab, onTabChange, isDarkMode }: TabViewProps) {
 
   const colors = {
     containerBg: isDarkMode ? '#27272a' : '#f4f4f5',
-    border: isDarkMode ? '#3f3f46' : '#e4e4e7',
     indicatorBg: isDarkMode ? '#3f3f46' : '#ffffff',
     text: isDarkMode ? '#fafafa' : '#18181b',
     textMuted: isDarkMode ? '#71717a' : '#a1a1aa',
@@ -39,10 +38,10 @@ export function TabView({ activeTab, onTabChange, isDarkMode }: TabViewProps) {
       style={{
         position: 'relative',
         display: 'inline-flex',
-        padding: '4px',
-        borderRadius: '12px',
+        height: '28px',
+        padding: '2px',
+        borderRadius: '8px',
         backgroundColor: colors.containerBg,
-        border: `1px solid ${colors.border}`,
         transition: 'all 0.3s ease',
       }}
     >
@@ -50,14 +49,14 @@ export function TabView({ activeTab, onTabChange, isDarkMode }: TabViewProps) {
       <div
         style={{
           position: 'absolute',
-          top: '4px',
+          top: '2px',
           left: indicatorStyle.left,
           width: indicatorStyle.width,
-          height: 'calc(100% - 8px)',
-          borderRadius: '8px',
+          height: 'calc(100% - 4px)',
+          borderRadius: '6px',
           backgroundColor: colors.indicatorBg,
-          boxShadow: isDarkMode ? 'none' : '0 1px 3px rgba(0,0,0,0.1)',
-          transition: 'left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: isDarkMode ? 'none' : '0 1px 2px rgba(0,0,0,0.08)',
+          transition: 'left 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
           zIndex: 0,
         }}
       />
@@ -70,19 +69,20 @@ export function TabView({ activeTab, onTabChange, isDarkMode }: TabViewProps) {
           zIndex: 1,
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          padding: '8px 20px',
-          borderRadius: '8px',
+          gap: '5px',
+          padding: '0 10px',
+          height: '100%',
+          borderRadius: '6px',
           border: 'none',
-          fontSize: '13px',
+          fontSize: '12px',
           fontWeight: 500,
           cursor: 'pointer',
           backgroundColor: 'transparent',
           color: activeTab === 'code' ? colors.text : colors.textMuted,
-          transition: 'color 0.2s ease',
+          transition: 'color 0.15s ease',
         }}
       >
-        <Code2 style={{ width: '14px', height: '14px' }} />
+        <Code2 style={{ width: '12px', height: '12px' }} />
         Code
       </button>
 
@@ -94,19 +94,20 @@ export function TabView({ activeTab, onTabChange, isDarkMode }: TabViewProps) {
           zIndex: 1,
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          padding: '8px 20px',
-          borderRadius: '8px',
+          gap: '5px',
+          padding: '0 10px',
+          height: '100%',
+          borderRadius: '6px',
           border: 'none',
-          fontSize: '13px',
+          fontSize: '12px',
           fontWeight: 500,
           cursor: 'pointer',
           backgroundColor: 'transparent',
           color: activeTab === 'preview' ? colors.text : colors.textMuted,
-          transition: 'color 0.2s ease',
+          transition: 'color 0.15s ease',
         }}
       >
-        <Eye style={{ width: '14px', height: '14px' }} />
+        <Eye style={{ width: '12px', height: '12px' }} />
         Preview
       </button>
     </div>

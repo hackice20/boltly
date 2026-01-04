@@ -352,7 +352,7 @@ export function Builder() {
         transition: 'background-color 0.3s ease',
       }}
     >
-      {/* Grid Background - matching landing page */}
+      {/* Grid Background */}
       <div
         className="absolute inset-0 transition-opacity duration-500 ease-in-out"
         style={{
@@ -587,8 +587,10 @@ export function Builder() {
             >
               <div
                 style={{
-                  padding: '12px 16px',
+                  padding: '14px 16px',
                   borderBottom: `1px solid ${colors.border}`,
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
               >
                 <TabView activeTab={activeTab} onTabChange={setActiveTab} isDarkMode={isDarkMode} />
