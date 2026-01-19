@@ -1,8 +1,8 @@
 interface LoaderProps {
-    isDarkMode: boolean;
+    isDarkMode?: boolean;
 }
 
-export function Loader({ isDarkMode }: LoaderProps) {
+export function Loader({ isDarkMode = true }: LoaderProps) {
     const colors = {
         track: isDarkMode ? '#27272a' : '#e4e4e7',
         spinner: isDarkMode ? '#fafafa' : '#18181b',

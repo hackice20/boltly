@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+// User model - synced from Clerk
+model User {
+  id        String   @id // Clerk user ID
+  email     String?
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  projects  Project[]
+
+  @@map("users")
+}
+
+// Project model - stores user's build projects
+model Project {
+  id        Int      @id @default(autoincrement())
+  userId    String   @map("user_id")
+  name      String
+  prompt    String
+  template  String   // 'react' or 'node'
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("projects")
+}

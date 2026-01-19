@@ -10,9 +10,11 @@ import axios from 'axios';
 import { BACKEND_URL } from '../config';
 import { parseXml } from '../steps';
 import { useWebContainer } from '../hooks/useWebContainer';
+import { REACT_TEMPLATE } from '../templates';
 import { Loader } from '../components/Loader';
 import DownloadButton from '../components/DownloadButton';
 import { Send, Zap, FolderTree, Sun, Moon } from 'lucide-react';
+import { useAuth } from '@clerk/clerk-react';
 
 // Minimal geometric lightning bolt logo
 function BoltLogo({ fill = 'black' }: { fill?: string }) {
@@ -194,6 +196,7 @@ export function Builder() {
   const [templateSet, setTemplateSet] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const webcontainer = useWebContainer();
+  const { getToken } = useAuth();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [activeTab, setActiveTab] = useState<'code' | 'preview'>('code');
@@ -271,75 +274,69 @@ export function Builder() {
     }
   }, [steps, files]);
 
+
+
+  // Load template immediately on mount (works without backend)
   useEffect(() => {
-    const createMountStructure = (files: FileItem[]): Record<string, any> => {
-      const mountStructure: Record<string, any> = {};
-      const processFile = (file: FileItem, isRootFolder: boolean) => {
-        if (file.type === 'folder') {
-          mountStructure[file.name] = {
-            directory: file.children ?
-              Object.fromEntries(
-                file.children.map(child => [child.name, processFile(child, false)])
-              )
-              : {}
-          };
-        } else if (file.type === 'file') {
-          if (isRootFolder) {
-            mountStructure[file.name] = {
-              file: { contents: file.content || '' }
-            };
-          } else {
-            return { file: { contents: file.content || '' } };
-          }
-        }
-        return mountStructure[file.name];
-      };
-      files.forEach(file => processFile(file, true));
-      return mountStructure;
-    };
-
-    const mountStructure = createMountStructure(files);
-    webcontainer?.mount(mountStructure);
-  }, [files, webcontainer]);
-
-  async function init() {
-    const response = await axios.post(`${BACKEND_URL}/template`, {
-      prompt: prompt.trim()
-    });
-    setTemplateSet(true);
-
-    const { prompts, uiPrompts } = response.data;
-
-    setSteps(parseXml(uiPrompts[0]).map((x: Step) => ({
-      ...x,
-      status: "pending"
-    })));
-
-    setLoading(true);
-    const stepsResponse = await axios.post(`${BACKEND_URL}/chat`, {
-      messages: [...prompts, prompt].map(content => ({
-        role: "user",
-        content
-      }))
-    });
-
-    setLoading(false);
-
-    setSteps(s => [...s, ...parseXml(stepsResponse.data.response).map(x => ({
+    console.log("Builder: Loading React template immediately");
+    const templateSteps = parseXml(REACT_TEMPLATE).map((x: Step) => ({
       ...x,
       status: "pending" as "pending"
-    }))]);
+    }));
+    setSteps(templateSteps);
+    setTemplateSet(true);
+  }, []);
 
-    setLlmMessages([...prompts, prompt].map(content => ({
-      role: "user",
-      content
-    })));
+  // Fetch LLM response in background (enhances template with user's prompt)
+  async function fetchLLMResponse() {
+    try {
+      const token = await getToken();
+      setLoading(true);
 
-    setLlmMessages(x => [...x, { role: "assistant", content: stepsResponse.data.response }]);
+      // Get prompts from backend
+      const response = await axios.post(`${BACKEND_URL}/template`, {
+        prompt: prompt.trim()
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const { prompts } = response.data;
+
+      // Get LLM-generated code
+      const stepsResponse = await axios.post(`${BACKEND_URL}/chat`, {
+        messages: [...prompts, prompt].map(content => ({
+          role: "user",
+          content
+        }))
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setLoading(false);
+
+      // Add LLM-generated steps to existing template steps
+      const llmSteps = parseXml(stepsResponse.data.response).map(x => ({
+        ...x,
+        status: "pending" as "pending"
+      }));
+
+      setSteps(s => [...s, ...llmSteps]);
+
+      setLlmMessages([...prompts, prompt].map(content => ({
+        role: "user",
+        content
+      })));
+      setLlmMessages(x => [...x, { role: "assistant", content: stepsResponse.data.response }]);
+
+    } catch (error) {
+      console.error("Builder: Backend API error (preview still works with template)", error);
+      setLoading(false);
+    }
   }
 
+  // Start LLM fetch in background
   useEffect(() => {
-    init();
+    fetchLLMResponse();
   }, []);
 
   return (
@@ -523,8 +520,11 @@ export function Builder() {
                         onClick={async () => {
                           const newMessage = { role: "user" as "user", content: userPrompt };
                           setLoading(true);
+                          const token = await getToken();
                           const stepsResponse = await axios.post(`${BACKEND_URL}/chat`, {
                             messages: [...llmMessages, newMessage]
+                          }, {
+                            headers: { Authorization: `Bearer ${token}` }
                           });
                           setLoading(false);
                           setLlmMessages(x => [...x, newMessage]);
@@ -596,11 +596,12 @@ export function Builder() {
                 <TabView activeTab={activeTab} onTabChange={setActiveTab} isDarkMode={isDarkMode} />
               </div>
               <div style={{ flex: 1, padding: '16px', overflow: 'hidden' }}>
-                {activeTab === 'code' ? (
+                <div style={{ height: '100%', display: activeTab === 'code' ? 'block' : 'none' }}>
                   <CodeEditor file={selectedFile} isDarkMode={isDarkMode} />
-                ) : (
-                  <PreviewFrame webContainer={webcontainer} />
-                )}
+                </div>
+                <div style={{ height: '100%', display: activeTab === 'preview' ? 'block' : 'none' }}>
+                  <PreviewFrame webContainer={webcontainer} files={files} />
+                </div>
               </div>
             </div>
           </div>

@@ -3,19 +3,29 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-      "dev": "tsc -b && node dist/index.js"
+        "dev": "nodemon --watch src --exec ts-node src/index.ts"
     },
     "keywords": [],
     "author": "yashs",
     "license": "ISC",
     "description": "",
     "dependencies": {
-      "@anthropic-ai/sdk": "^0.68.0",
-      "@types/cors": "^2.8.19",
-      "@types/express": "^5.0.5",
-      "cors": "^2.8.5",
-      "dotenv": "^17.2.3",
-      "express": "^5.1.0",
-      "typescript": "^5.9.3"
+        "@clerk/express": "^1.7.60",
+        "@neondatabase/serverless": "^1.0.2",
+        "openai": "^4.77.0",
+        "@prisma/adapter-neon": "^7.2.0",
+        "@prisma/client": "^7.2.0",
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.5",
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.3",
+        "express": "^5.1.0",
+        "prisma": "^7.2.0",
+        "typescript": "^5.9.3"
+    },
+    "devDependencies": {
+        "@types/node": "^25.0.3",
+        "nodemon": "^3.1.11",
+        "ts-node": "^10.9.2"
     }
-  }
+}

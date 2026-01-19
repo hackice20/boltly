@@ -1,1 +1,1 @@
-{"root":["./src/constants.ts","./src/index.ts","./src/prompts.ts","./src/stripindents.ts","./src/defaults/node.ts","./src/defaults/react.ts"],"version":"5.9.3"}
+{"root":["./src/authMiddleware.ts","./src/constants.ts","./src/db.ts","./src/index.ts","./src/llm.ts","./src/projectsRoutes.ts","./src/prompts.ts","./src/stripindents.ts","./src/defaults/node.ts","./src/defaults/react.ts"],"version":"5.9.3"}
