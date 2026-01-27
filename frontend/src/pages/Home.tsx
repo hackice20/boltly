@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Plus, ArrowRight, Lightbulb, Sun, Moon } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Plus, ArrowRight, Lightbulb, Sun, Moon, LogIn } from 'lucide-react';
+import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 
 // Minimal geometric lightning bolt logo
 function BoltLogo({ fill = 'black' }: { fill?: string }) {
@@ -89,29 +90,67 @@ export function Home() {
             <span style={{ fontSize: '16px', fontWeight: 600, color: isDarkMode ? 'white' : '#18181b' }}>Boltly</span>
           </div>
 
-          {/* Theme Toggle - Right */}
-          <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: isDarkMode ? '#27272a' : '#e4e4e7',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-            }}
-            aria-label="Toggle theme"
-          >
-            {isDarkMode ? (
-              <Sun style={{ width: '20px', height: '20px', color: '#fbbf24' }} />
-            ) : (
-              <Moon style={{ width: '20px', height: '20px', color: '#3b82f6' }} />
-            )}
-          </button>
+          {/* Right side - Auth + Theme Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* Auth buttons */}
+            <SignedOut>
+              <Link
+                to="/sign-in"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '8px 16px',
+                  borderRadius: '9999px',
+                  backgroundColor: '#3b82f6',
+                  color: 'white',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <LogIn style={{ width: '16px', height: '16px' }} />
+                Sign In
+              </Link>
+            </SignedOut>
+            <SignedIn>
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: {
+                      width: '36px',
+                      height: '36px',
+                    },
+                  },
+                }}
+              />
+            </SignedIn>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: isDarkMode ? '#27272a' : '#e4e4e7',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+              aria-label="Toggle theme"
+            >
+              {isDarkMode ? (
+                <Sun style={{ width: '20px', height: '20px', color: '#fbbf24' }} />
+              ) : (
+                <Moon style={{ width: '20px', height: '20px', color: '#3b82f6' }} />
+              )}
+            </button>
+          </div>
         </header>
 
         {/* ========== MAIN CONTENT ========== */}
