@@ -19,25 +19,30 @@ const config: Config = {
                     border: 'rgba(255, 255, 255, 0.1)',
                     'border-strong': 'rgba(255, 255, 255, 0.15)',
                 },
-                // Primary accent: Burnt Orange
-                primary: {
-                    50: '#fef7ee',
-                    100: '#fdecd3',
-                    200: '#fad4a5',
-                    300: '#f7b66d',
-                    400: '#f48d32',
-                    500: '#f17013', // Main burnt orange
-                    600: '#e25809',
-                    700: '#bb420a',
-                    800: '#95350f',
-                    900: '#792d10',
+                // Primary accent: Electric Blue & Neon Green
+                electric: {
+                    50: '#eff6ff',
+                    100: '#dbeafe',
+                    200: '#bfdbfe',
+                    300: '#93c5fd',
+                    400: '#60a5fa',
+                    500: '#3b82f6', // Main Electric Blue
+                    600: '#2563eb',
+                    700: '#1d4ed8',
+                    800: '#1e40af',
+                    900: '#1e3a8a',
+                },
+                neon: {
+                    400: '#4ade80',
+                    500: '#22c55e', // Main Neon Green
+                    600: '#16a34a',
                 },
                 // Deep charcoal backgrounds
                 charcoal: {
-                    900: '#18181b',
-                    800: '#27272a',
-                    700: '#3f3f46',
-                    600: '#52525b',
+                    900: '#09090b', // Darker base
+                    800: '#18181b',
+                    700: '#27272a',
+                    600: '#3f3f46',
                 },
             },
             backdropBlur: {
@@ -55,6 +60,7 @@ const config: Config = {
                 'slide-up': 'slideUp 0.3s ease-out',
                 'slide-down': 'slideDown 0.3s ease-out',
                 'glass-shimmer': 'glassShimmer 2s ease-in-out infinite',
+                'aurora': 'aurora 6s linear infinite',
             },
             keyframes: {
                 fadeIn: {
@@ -72,6 +78,10 @@ const config: Config = {
                 glassShimmer: {
                     '0%, 100%': { backgroundPosition: '0% 50%' },
                     '50%': { backgroundPosition: '100% 50%' },
+                },
+                aurora: {
+                    '0%': { backgroundPosition: '50% 50%, 50% 50%' },
+                    '100%': { backgroundPosition: '350% 50%, 350% 50%' },
                 },
             },
         },
