@@ -1,0 +1,14 @@
+# Claude Sonnet
+python models/claude_sonnet_4_5.py
+
+# Llama 3 70B
+python models/llama3_70b.py
+
+# GPT 5.2
+python models/gpt_5_2.py
+
+# Gemini 2.5 Pro
+python models/gemini_2_5_pro.py
+
+# moonshotai/kimi-k2-instruct
+python models/kimi_k2_instruct.py
